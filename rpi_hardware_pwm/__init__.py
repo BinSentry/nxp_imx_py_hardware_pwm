@@ -37,6 +37,7 @@ class HardwarePWM:
     _duty_cycle: float
     _hz: float
     chippath: str = "/sys/class/pwm/pwmchip0" # mostly here for testing
+    created_pwmX: bool = False
 
     def __init__(self, pwm_channel: int, hz: float, chip: int = 0) -> None:
 
@@ -64,6 +65,11 @@ class HardwarePWM:
             except PermissionError:
                 continue
 
+    def __del__(self):
+        self.stop()
+        if self.created_pwmX:
+            self.destroy_pwmX()
+            self.created_pwmX = False
 
     def is_overlay_loaded(self) -> bool:
         return os.path.isdir(self.chippath)
@@ -80,6 +86,10 @@ class HardwarePWM:
 
     def create_pwmX(self) -> None:
         self.echo(self.pwm_channel, os.path.join(self.chippath, "export"))
+        self.created_pwmX = True
+
+    def destroy_pwmX(self) -> None:
+        self.echo(self.pwm_channel, os.path.join(self.chippath, "unexport"))
 
     def start(self, initial_duty_cycle: float) -> None:
         self.change_duty_cycle(initial_duty_cycle)
