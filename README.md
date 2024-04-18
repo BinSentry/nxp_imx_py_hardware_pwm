@@ -4,13 +4,6 @@
 
 Access the hardware PWM of a MPU using Linux sysfs with Python. More lightweight than alternatives.
 
-### Installation
-
-1. Setup device tree to expose PWM chip(s) and channel(s)
-2. Install this library: `sudo pip3 install rpi-hardware-pwm`
-
-
-
 ### Examples
 
 
